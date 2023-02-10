@@ -5,6 +5,7 @@
 /storage/*.key
 /storage
 /vendor
+/docker/mysql/volume
 .env
 .env.backup
 .env.production
