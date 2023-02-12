@@ -3,7 +3,10 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Factories\UserDetailFactory;
 use Illuminate\Database\Seeder;
+use Database\Factories\UserFactory;
+use App\Models\Currency;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,11 +17,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        Currency::query()->insert([
+            [
+                'name' => 'Рублевый счет',
+                'code' => 'RUB',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'name' => 'Долларовый счет',
+                'code' => 'USD',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+//        $userDetails = UserDetailFactory::new()->count(10)->create();
+//
+//        UserFactory::new()->count(10)->hasAttached($userDetails);
     }
 }
