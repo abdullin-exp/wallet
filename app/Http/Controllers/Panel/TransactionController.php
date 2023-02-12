@@ -178,6 +178,14 @@ class TransactionController extends Controller
                     ->first();
 
                 $walletWithdraw = Wallet::find($transferWithdraw->to_wallet_id);
+
+                if ($walletWithdraw->balance < $transferWithdraw->amount) {
+                    return back()->with([
+                        'status' => 'Недостаточно средств.',
+                        'class' => 'danger'
+                    ]);
+                }
+
                 $walletWithdraw->balance -= $transferWithdraw->amount;
                 $walletWithdraw->save();
 

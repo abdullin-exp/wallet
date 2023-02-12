@@ -21,6 +21,9 @@ class SendingScheduledTransfers extends Command
         foreach ($scheduledTransfers as $transfer) {
             if ($transfer->type == 'withdraw') {
                 $wallet = Wallet::find($transfer->to_wallet_id);
+                if ($wallet->balance < $transfer->amount) {
+                    continue;
+                }
                 $wallet->balance -= $transfer->amount;
             } else {
                 $wallet = Wallet::find($transfer->to_wallet_id);
