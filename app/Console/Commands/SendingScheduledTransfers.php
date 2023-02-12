@@ -32,7 +32,7 @@ class SendingScheduledTransfers extends Command
 
             $wallet->save();
             $transfer->confirmed = true;
-            $transfer->scheduled_at = null;
+            $transfer->scheduled_at = '';
             $transfer->save();
         }
     }
