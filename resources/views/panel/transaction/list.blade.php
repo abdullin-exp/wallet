@@ -25,7 +25,8 @@
                         <span>{{ $transaction->scheduled_at }}</span>
                         @if ($transaction->type == 'withdraw')
                             <br>
-                            <a href="#" class="btn btn-sm btn-primary js-transfer-send-now" data-bs-toggle="modal" data-bs-target="#send-now" data-transfer_id="{{ $transaction->id }}">Отправить сейчас</a>
+                            <a href="#" class="btn btn-sm btn-primary js-transfer-send-now" data-bs-toggle="modal" data-bs-target="#send-now" data-transfer_id="{{ $transaction->id }}">Отправить</a>
+                            <a href="#" class="btn btn-sm btn-danger js-transfer-cancel-now" data-bs-toggle="modal" data-bs-target="#cancel-now" data-transfer_id="{{ $transaction->id }}">Отменить</a>
                         @endif
                     @else
                         нет

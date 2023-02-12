@@ -68,6 +68,7 @@ Route::group(['middleware' => 'auth', 'namespace' => 'Panel', 'prefix' => 'panel
     Route::get('/transactions', [TransactionController::class, 'page'])->name('panel-transactions');
     Route::post('/transactions/make-transfer', [TransactionController::class, 'makeTransfer'])->name('panel-transactions.makeTransfer');
     Route::post('/transactions/send-now', [TransactionController::class, 'sendNow'])->name('panel-transactions.sendNow');
+    Route::post('/transactions/cancel-now', [TransactionController::class, 'cancelNow'])->name('panel-transactions.cancelNow');
 
     Route::get('/invoices/{exposed?}', [InvoiceController::class, 'page'])->name('panel-invoices');
     Route::post('/invoices/create', [InvoiceController::class, 'create'])->name('panel-invoices.create');

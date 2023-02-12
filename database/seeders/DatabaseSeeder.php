@@ -31,9 +31,5 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s')
             ]
         ]);
-
-//        $userDetails = UserDetailFactory::new()->count(10)->create();
-//
-//        UserFactory::new()->count(10)->hasAttached($userDetails);
     }
 }

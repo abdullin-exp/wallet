@@ -209,4 +209,54 @@ class TransactionController extends Controller
             ]);
         }
     }
+
+    public function cancelNow(Request $request): RedirectResponse
+    {
+        $validator = Validator::make($request->all(),
+            ['transfer_id' => 'required|integer|numeric'], []
+        );
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        try {
+
+            DB::transaction(function () use ($request) {
+
+                $transferWithdraw = Transaction::find(
+                    $request->input('transfer_id')
+                );
+
+                $transferDeposit = Transaction::query()
+                    ->select('*')
+                    ->where('from_wallet_id', $transferWithdraw->to_wallet_id)
+                    ->where('type', 'deposit')
+                    ->where('amount', $transferWithdraw->amount)
+                    ->where('confirmed', false)
+                    ->whereNotNull('scheduled_at')
+                    ->where('scheduled_at', date('Y-m-d', strtotime($transferWithdraw->scheduled_at)))
+                    ->first();
+
+                $transferWithdraw->delete();
+                $transferDeposit->delete();
+
+            });
+
+            return back()->with([
+                'status' => 'Успешно.',
+                'class' => 'success'
+            ]);
+
+        } catch (\Exception $e) {
+            report($e);
+
+            return back()->with([
+                'status' => 'Ошибка перевода. ' . $e->getMessage(),
+                'class' => 'danger'
+            ]);
+        }
+    }
 }

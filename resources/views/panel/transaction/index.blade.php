@@ -16,5 +16,6 @@
 
     @include('panel.transaction.modals.transfer')
     @include('panel.transaction.modals.send-now')
+    @include('panel.transaction.modals.cancel-now')
 
 @endsection

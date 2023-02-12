@@ -46,4 +46,12 @@ $(document).ready(function () {
 
         $('body').find('#send-now').find('input[name=transfer_id]').val(transferId);
     });
+
+    $('.js-transfer-cancel-now').on('click', function (e) {
+        e.preventDefault();
+
+        let transferId = $(this).attr('data-transfer_id');
+
+        $('body').find('#cancel-now').find('input[name=transfer_id]').val(transferId);
+    });
 });
