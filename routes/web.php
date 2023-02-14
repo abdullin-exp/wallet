@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Panel\TransferController;
 use App\Http\Controllers\Panel\InvoiceController;
 use App\Http\Controllers\Panel\ProfileController;
 use App\Http\Controllers\Panel\TransactionController;
@@ -58,20 +59,21 @@ Route::controller(ResetPasswordController::class)->group(function () {
 Route::group(['middleware' => 'auth', 'namespace' => 'Panel', 'prefix' => 'panel'], function () {
     Route::get('/', [PanelController::class, 'page'])->name('panel');
 
+    Route::get('/profile', [ProfileController::class, 'page'])->name('panel-profile');
+    Route::post('/profile', [ProfileController::class, 'save'])->name('panel-profile.save');
+
     Route::get('/wallets', [WalletController::class, 'page'])->name('panel-wallets');
     Route::post('/wallets/create', [WalletController::class, 'create'])->name('panel-wallets.create');
     Route::post('/wallets/deposit', [WalletController::class, 'deposit'])->name('panel-wallets.deposit');
 
-    Route::get('/profile', [ProfileController::class, 'page'])->name('panel-profile');
-    Route::post('/profile', [ProfileController::class, 'save'])->name('panel-profile.save');
+    Route::get('/transfers', [TransferController::class, 'page'])->name('panel-transfers');
+    Route::post('/transfers/make', [TransferController::class, 'make'])->name('panel-transfers.make');
+    Route::post('/transfers/send-now', [TransferController::class, 'sendNow'])->name('panel-transfers.sendNow');
+    Route::post('/transfers/cancel-now', [TransferController::class, 'cancelNow'])->name('panel-transfers.cancelNow');
+
+    Route::get('/invoices', [InvoiceController::class, 'page'])->name('panel-invoices');
+    Route::post('/invoices/create', [InvoiceController::class, 'create'])->name('panel-invoices.create');
+    Route::post('/invoices/pay', [InvoiceController::class, 'pay'])->name('panel-invoices.pay');
 
     Route::get('/transactions', [TransactionController::class, 'page'])->name('panel-transactions');
-    Route::post('/transactions/make-transfer', [TransactionController::class, 'makeTransfer'])->name('panel-transactions.makeTransfer');
-    Route::post('/transactions/send-now', [TransactionController::class, 'sendNow'])->name('panel-transactions.sendNow');
-    Route::post('/transactions/cancel-now', [TransactionController::class, 'cancelNow'])->name('panel-transactions.cancelNow');
-
-    Route::get('/invoices/{exposed?}', [InvoiceController::class, 'page'])->name('panel-invoices');
-    Route::post('/invoices/create', [InvoiceController::class, 'create'])->name('panel-invoices.create');
-    Route::post('/invoices/paid', [InvoiceController::class, 'paid'])->name('panel-invoices.paid');
-
 });

@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <form action="{{ route('panel-transactions.makeTransfer') }}" method="POST">
+                <form action="{{ route('panel-transfers.make') }}" method="POST">
 
                     @csrf
 
@@ -44,11 +44,11 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="scheduled_at" class="form-label">Запланировать</label>
+                        <label for="scheduled_date" class="form-label">Запланировать</label>
                         <div class="input-group">
-                            <input type="text" name="scheduled_at" id="scheduled_at" class="form-control js-transfer-datepicker @error('scheduled_at') is-invalid @enderror">
+                            <input type="text" name="scheduled_date" id="scheduled_date" class="form-control js-transfer-datepicker @error('scheduled_date') is-invalid @enderror">
 
-                            @error('scheduled_at')
+                            @error('scheduled_date')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>

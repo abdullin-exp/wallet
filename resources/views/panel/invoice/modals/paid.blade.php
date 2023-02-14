@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <form action="{{ route('panel-invoices.paid') }}" method="POST">
+                <form action="{{ route('panel-invoices.pay') }}" method="POST">
 
                     @csrf
 

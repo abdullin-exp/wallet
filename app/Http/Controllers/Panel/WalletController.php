@@ -82,22 +82,18 @@ class WalletController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
-                $user = auth()->user();
+                $walletId = (int) $request->input('wallet_id');
+                $amount = (int) $request->input('amount');
 
-                $wallet = Wallet::find(
-                    $request->input('wallet_id')
-                );
+                $wallet = Wallet::find($walletId);
 
-                $wallet->balance += $request->input('amount');
+                $wallet->balance += $amount;
                 $wallet->save();
 
                 $transaction = new Transaction();
-                $transaction->from_user_id = $user->id;
-                $transaction->to_user_id = $user->id;
-                $transaction->to_wallet_id = $wallet->id;
+                $transaction->wallet_id = $wallet->id;
                 $transaction->type = 'deposit';
-                $transaction->amount = $request->input('amount');
-                $transaction->confirmed = true;
+                $transaction->amount = $amount;
                 $transaction->save();
             });
 

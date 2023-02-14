@@ -18,8 +18,9 @@
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li><a href="{{ route('panel-wallets') }}" class="nav-link px-2 link-dark">Кошельки</a></li>
+                    <li><a href="{{ route('panel-transfers') }}" class="nav-link px-2 link-dark">Переводы</a></li>
+                    <li><a href="{{ route('panel-invoices') }}" class="nav-link px-2 link-dark">Счета</a></li>
                     <li><a href="{{ route('panel-transactions') }}" class="nav-link px-2 link-dark">Транзакции</a></li>
-                    <li><a href="{{ route('panel-invoices', ['exposed' => 'to']) }}" class="nav-link px-2 link-dark">Счета</a></li>
                 </ul>
 
                 <div class="dropdown text-end">

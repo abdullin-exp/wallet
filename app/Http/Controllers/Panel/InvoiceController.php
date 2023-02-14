@@ -17,22 +17,13 @@ use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
-    public function page(string $exposed = 'to'): Factory|View|Application
+    public function page(): Factory|View|Application
     {
         $user = auth()->user();
 
-        $query = Invoice::query();
-        if ($exposed == 'to') {
-            $query->where('to_user_id', $user->id);
-        } else {
-            $query->where('from_user_id', $user->id);
-        }
-
-        $invoices = $query->get();
-
         return view('panel.invoice.index', [
             'user' => $user,
-            'invoices' => $invoices,
+            'invoices' => $user->issuedInvoicesTo
         ]);
     }
 
@@ -62,8 +53,12 @@ class InvoiceController extends Controller
                 ->withInput();
         }
 
+        $walletId = (int) $request->input('wallet_id');
+        $email = $request->input('email');
+        $amount = (int) $request->input('amount');
+
         $userTo = User::query()
-            ->where('email', $request->input('email'))
+            ->where('email', $email)
             ->first();
 
         if (!$userTo) {
@@ -78,8 +73,8 @@ class InvoiceController extends Controller
         $invoice = new Invoice();
         $invoice->from_user_id = $userFrom->id;
         $invoice->to_user_id = $userTo->id;
-        $invoice->deposit_id = $request->input('wallet_id');
-        $invoice->amount = $request->input('amount');
+        $invoice->deposit_id = $walletId;
+        $invoice->amount = $amount;
 
         if (!$invoice->save()) {
             return back()->with([
@@ -94,7 +89,7 @@ class InvoiceController extends Controller
         ]);
     }
 
-    public function paid(Request $request): RedirectResponse
+    public function pay(Request $request): RedirectResponse
     {
         $validator = Validator::make($request->all(),
             [
@@ -114,17 +109,13 @@ class InvoiceController extends Controller
                 ->withInput();
         }
 
-        $invoice = Invoice::find(
-            $request->input('invoice_id')
-        );
+        $invoiceId = (int) $request->input('invoice_id');
+        $walletId = (int) $request->input('wallet_id');
 
-        $walletDeposit = Wallet::find(
-            $invoice->deposit_id
-        );
+        $invoice = Invoice::find($invoiceId);
 
-        $walletWithdraw = Wallet::find(
-            $request->input('wallet_id')
-        );
+        $walletWithdraw = Wallet::find($walletId);
+        $walletDeposit = Wallet::find($invoice->deposit_id);
 
         if ($walletWithdraw->currency->code != $walletDeposit->currency->code) {
             return back()->with([
@@ -141,32 +132,23 @@ class InvoiceController extends Controller
         }
 
         try {
-            DB::transaction(function() use ($invoice, $walletDeposit, $walletWithdraw) {
+            DB::transaction(function() use ($invoice, $walletWithdraw, $walletDeposit) {
+                $walletWithdraw->balance -= $invoice->amount;
+                $walletWithdraw->save();
 
-                $user = auth()->user();
+                $transaction = new Transaction();
+                $transaction->wallet_id = $walletWithdraw->id;
+                $transaction->type = 'withdraw';
+                $transaction->amount = $invoice->amount;
+                $transaction->save();
 
                 $walletDeposit->balance += $invoice->amount;
                 $walletDeposit->save();
 
                 $transaction = new Transaction();
-                $transaction->from_user_id = $user->id;
-                $transaction->to_user_id = $walletDeposit->user_id;
-                $transaction->from_wallet_id = $walletWithdraw->id;
-                $transaction->to_wallet_id = $walletDeposit->id;
+                $transaction->wallet_id = $walletDeposit->id;
                 $transaction->type = 'deposit';
                 $transaction->amount = $invoice->amount;
-                $transaction->confirmed = true;
-                $transaction->save();
-
-                $walletWithdraw->balance -= $invoice->amount;
-                $walletWithdraw->save();
-
-                $transaction = new Transaction();
-                $transaction->to_user_id = $walletWithdraw->user_id;
-                $transaction->to_wallet_id = $walletWithdraw->id;
-                $transaction->type = 'withdraw';
-                $transaction->amount = $invoice->amount;
-                $transaction->confirmed = true;
                 $transaction->save();
 
                 $invoice->withdraw_id = $walletWithdraw->id;

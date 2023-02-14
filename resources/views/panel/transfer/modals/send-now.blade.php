@@ -1,8 +1,8 @@
-<div id="cancel-now" class="modal fade" tabindex="-1" aria-hidden="true">
+<div id="send-now" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <form action="{{ route('panel-transactions.cancelNow') }}" method="POST">
+                <form action="{{ route('panel-transfers.sendNow') }}" method="POST">
 
                     @csrf
 
@@ -14,6 +14,7 @@
                         <button type="submit" class="btn btn-primary w-50">Да</button>
                         <button type="submit" class="btn btn-secondary w-50 ms-3">Нет</button>
                     </div>
+
 
                 </form>
             </div>

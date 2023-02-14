@@ -12,10 +12,4 @@
         @include('panel.transaction.list')
     @endif
 
-    <a href="#" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#make-transfer">Сделать перевод</a>
-
-    @include('panel.transaction.modals.transfer')
-    @include('panel.transaction.modals.send-now')
-    @include('panel.transaction.modals.cancel-now')
-
 @endsection

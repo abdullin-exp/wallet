@@ -40,4 +40,34 @@ class User extends Authenticatable
     {
         return $this->hasMany(Wallet::class);
     }
+
+    public function transactions(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Transaction::class,
+            Wallet::class,
+            'user_id',
+            'wallet_id'
+        );
+    }
+
+    public function sentTransfers(): HasMany
+    {
+        return $this->hasMany(Transfer::class, 'from_user_id');
+    }
+
+    public function receivedTransfers(): HasMany
+    {
+        return $this->hasMany(Transfer::class, 'to_user_id');
+    }
+
+    public function issuedInvoicesFrom(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'from_user_id');
+    }
+
+    public function issuedInvoicesTo(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'to_user_id');
+    }
 }
